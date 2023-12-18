@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import Header from './components/App/Header';
+import PokemonFilter from './components/Pokemon/PokemonFilter';
+import PokemonList from './components/Pokemon/PokemonList';
+import { getPokemonData, getPokemons } from './services/Api';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [pokemons, setPokemons] = useState([]);
+
+  const fetchPokemons = async () => {
+    try {
+      const data = await getPokemons();
+      console.log(data.results);
+      const promises = data.results.map(async (pokemon) => {
+        return await getPokemonData(pokemon.url)
+      })
+      const results = await Promise.all(promises)
+      setPokemons(results)
+    } catch (error) {
+      console.error('Error al obtener los Pokémon:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPokemons();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div>
+      <Header />
+      <div className='w-[100%] bg-[#1f1f1f] flex p-5 pt-[105px] gap-8 min-h-screen'>
+        <PokemonFilter />
+        <PokemonList pokemons={pokemons} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
