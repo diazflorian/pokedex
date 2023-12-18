@@ -11,4 +11,4 @@ Aunque actualmente solo permite visualizar una lista de pokemones, pronto le est
 - Ver detalles de cada Pokémon, como estadísticas y habilidades.
 
 ## Vista Previa
-![Alt text](image.png)
+![Alt text](image-1.png)
